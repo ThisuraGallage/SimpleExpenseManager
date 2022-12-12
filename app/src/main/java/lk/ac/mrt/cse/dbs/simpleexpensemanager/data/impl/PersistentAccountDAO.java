@@ -82,7 +82,6 @@ public class PersistentAccountDAO implements AccountDAO {
         String SqlCmd_selectAccounts="select * from accounts";
         dbHelper.setAllfromAccounts(db.rawQuery(SqlCmd_selectAccounts,null));
         db.close();
-        //db.close();
 
     }
 
