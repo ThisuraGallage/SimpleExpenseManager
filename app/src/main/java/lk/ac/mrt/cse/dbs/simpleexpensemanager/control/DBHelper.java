@@ -43,7 +43,6 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String create_accounts="create table accounts(accountNO TEXT primary key,bankName TEXT, accountHolderName TEXT, balance real)";
-        //String create_transactions="create table transactions(date TEXT,accountNo TEXT,expenseType TEXT,amount real)";
         String create_transactions2="create table transactions(transactionNo integer primary key autoincrement,accountNo text,expenseType text,amount real,date date,foreign key(accountNo) references accounts(AccountNo))";
         db.execSQL(create_accounts);
         db.execSQL(create_transactions2);

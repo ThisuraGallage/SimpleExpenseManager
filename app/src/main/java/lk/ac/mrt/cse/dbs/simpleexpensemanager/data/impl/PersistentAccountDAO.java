@@ -45,14 +45,15 @@ public class PersistentAccountDAO implements AccountDAO {
     public Account getAccount(String accountNo) throws InvalidAccountException {
         Cursor cursor=this.dbHelper.getAllfromAccounts();
         Account ac=new Account("",null,null,0);
+
         while(cursor.moveToNext()){
             if(cursor.getString(0).equals(accountNo)){
                 ac=new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getDouble(3));
                 return ac;
             }
-
-
         }
+
+
         return ac;
 
     }
@@ -65,13 +66,11 @@ public class PersistentAccountDAO implements AccountDAO {
         cv.put("bankName",account.getBankName());
         cv.put("accountHolderName",account.getAccountHolderName());
         cv.put("balance",account.getBalance());
-
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         db.insert("accounts",null,cv);
         String SqlCmd_selectAccounts="select * from accounts";
         dbHelper.setAllfromAccounts(db.rawQuery(SqlCmd_selectAccounts,null));
         db.close();
-
     }
 
     @Override
@@ -82,7 +81,6 @@ public class PersistentAccountDAO implements AccountDAO {
         String SqlCmd_selectAccounts="select * from accounts";
         dbHelper.setAllfromAccounts(db.rawQuery(SqlCmd_selectAccounts,null));
         db.close();
-
     }
 
     @Override
@@ -94,19 +92,23 @@ public class PersistentAccountDAO implements AccountDAO {
             throw new InvalidAccountException(msg);
         }
         else {
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
             Account acc=getAccount(accountNo);
-            double balance2=acc.getBalance();
-            String sql_update_balance = "update accounts set balance =" + balance2 + " where accountNo=" + "'" + accountNo + "'";
+            double balance=acc.getBalance();
+            SQLiteDatabase db=dbHelper.getWritableDatabase();
+            ContentValues cv=new ContentValues();
+            String where="accountNo="+"'"+accountNo+"'";
+
 
             switch (expenseType) {
                 case EXPENSE:
-                    balance2 = balance2 - amount;
-                    db.execSQL(sql_update_balance);
+                    cv.put("balance",balance-amount);
+                    db.update("accounts",cv,where,null);
+                    db.close();
                     break;
                 case INCOME:
-                    balance2 = balance2 + amount;
-                    db.execSQL(sql_update_balance);
+                    cv.put("balance",balance+amount);
+                    db.update("accounts",cv,where,null);
+                    db.close();
                     break;
             }
             db.close();
