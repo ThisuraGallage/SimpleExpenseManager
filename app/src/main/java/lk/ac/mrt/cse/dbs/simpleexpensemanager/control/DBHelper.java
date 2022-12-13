@@ -54,6 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("drop table if exists "+"transactions");
         sqLiteDatabase.execSQL("drop table if exists "+"accounts");
         onCreate(sqLiteDatabase);
+        //
 
 
     }
